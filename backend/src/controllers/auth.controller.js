@@ -1,6 +1,6 @@
 import User from "../models/user.model.js";
 import bcrypt from "bcryptjs";
-// import { generateToken } from "../lib/utils.js";
+import { generateToken } from "../lib/utils.js";
 
 export const signup = async (req, res) => {
 
@@ -9,7 +9,7 @@ export const signup = async (req, res) => {
     try {
 
         // Check required fields
-        if (!fullName || !email || !password) {
+        if (!fullName || !email || !password) {    
             return res.status(400).json({
                 message: "All fields are required"
             });
@@ -58,7 +58,11 @@ export const signup = async (req, res) => {
 
         if (newUser) {
 
+
             // generateToken(newUser._id, res);
+
+            const savedUser=await newUser.save();
+           generateToken(savedUser._id,res);
 
             res.status(201).json({
                 _id: newUser._id,
