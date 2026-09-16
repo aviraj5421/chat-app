@@ -1,6 +1,9 @@
 import User from "../models/user.model.js";
 import bcrypt from "bcryptjs";
 import { generateToken } from "../lib/utils.js";
+import { sendWelcomeEmail } from "../emails/emailsHandlers.js";
+import {ENV} from "../lib/env.js";
+
 
 
 export  const signup = async (req, res) => {
@@ -71,6 +74,19 @@ export  const signup = async (req, res) => {
                 email: newUser.email,
                 profilePic: newUser.profilePic
             });
+
+            // to send welcome email
+
+
+            try {
+
+                await sendWelcomeEmail(savedUser.email, savedUser.fullName,ENV.CLIENT_URL);
+
+
+                
+            } catch (error) {
+                console.error("Error sending welcome email:", error);
+            }
 
         } else {
 
