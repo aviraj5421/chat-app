@@ -1,12 +1,8 @@
 import User from "../models/user.model.js";
 import bcrypt from "bcryptjs";
 import { generateToken } from "../lib/utils.js";
-import { sendWelcomeEmail } from "../emails/emailsHandlers.js";
-import {ENV} from "../lib/env.js";
 
-
-
-export  const signup = async (req, res) => {
+export const signup = async (req, res) => {
 
     const { fullName, email, password } = req.body;
 
@@ -75,19 +71,6 @@ export  const signup = async (req, res) => {
                 profilePic: newUser.profilePic
             });
 
-            // to send welcome email
-
-
-            try {
-
-                await sendWelcomeEmail(savedUser.email, savedUser.fullName,ENV.CLIENT_URL);
-
-
-                
-            } catch (error) {
-                console.error("Error sending welcome email:", error);
-            }
-
         } else {
 
             return res.status(400).json({
@@ -106,9 +89,17 @@ export  const signup = async (req, res) => {
     }
 };
 
+
 export const login=async(req,res)=>{
 
     const {email,password}=req.body;
+
+    if(!email || !password){
+        return res.status(400).json({
+            message:"Email and password are required"
+        })
+        
+    }
 
     try {
 
